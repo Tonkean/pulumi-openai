@@ -17,9 +17,9 @@ package main
 import (
 	_ "embed"
 
-	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
+	"context"
+	"github.com/pulumi/pulumi-terraform-bridge/pf/tfbridge"
 	openai "github.com/tonkean/pulumi-openai/provider"
-	"github.com/tonkean/pulumi-openai/provider/pkg/version"
 )
 
 //go:embed schema.json
@@ -27,5 +27,6 @@ var pulumiSchema []byte
 
 func main() {
 	// Modify the path to point to the new provider
-	tfbridge.Main("openai", version.Version, openai.Provider(), pulumiSchema)
+	tfbridge.Main(context.Background(), "openai", openai.Provider(),
+		tfbridge.ProviderMetadata{PackageSchema: pulumiSchema})
 }

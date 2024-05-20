@@ -8,7 +8,7 @@
     ],
     "homepage": "https://www.pulumi.com",
     "license": "Apache-2.0",
-    "attribution": "This Pulumi package is based on the [`openai` Terraform Provider](https://github.com/terraform-providers/terraform-provider-openai).",
+    "attribution": "This Pulumi package is based on the [`openai` Terraform Provider](https://github.com/skyscrapr/terraform-provider-openai).",
     "repository": "https://github.com/tonkean/pulumi-openai",
     "publisher": "Tonkean",
     "meta": {
@@ -28,7 +28,7 @@
         },
         "nodejs": {
             "packageDescription": "A Pulumi package for creating and managing openai cloud resources.",
-            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/terraform-providers/terraform-provider-openai)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-openai` repo](https://github.com/tonkean/pulumi-openai/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-openai` repo](https://github.com/terraform-providers/terraform-provider-openai/issues).",
+            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/skyscrapr/terraform-provider-openai)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-openai` repo](https://github.com/tonkean/pulumi-openai/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-openai` repo](https://github.com/skyscrapr/terraform-provider-openai/issues).",
             "dependencies": {
                 "@pulumi/pulumi": "^3.0.0"
             },
@@ -43,35 +43,889 @@
             "requires": {
                 "pulumi": "\u003e=3.0.0,\u003c4.0.0"
             },
-            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/terraform-providers/terraform-provider-openai)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-openai` repo](https://github.com/tonkean/pulumi-openai/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-openai` repo](https://github.com/terraform-providers/terraform-provider-openai/issues).",
+            "readme": "\u003e This provider is a derived work of the [Terraform Provider](https://github.com/skyscrapr/terraform-provider-openai)\n\u003e distributed under [MPL 2.0](https://www.mozilla.org/en-US/MPL/2.0/). If you encounter a bug or missing feature,\n\u003e first check the [`pulumi-openai` repo](https://github.com/tonkean/pulumi-openai/issues); however, if that doesn't turn up anything,\n\u003e please consult the source [`terraform-provider-openai` repo](https://github.com/skyscrapr/terraform-provider-openai/issues).",
             "compatibility": "tfbridge20",
             "pyproject": {}
         }
     },
-    "config": {},
-    "provider": {
-        "description": "The provider type for the openai package. By default, resources use package-wide configuration\nsettings, however an explicit `Provider` instance may be created and passed during resource\nconstruction to achieve fine-grained programmatic control over provider settings. See the\n[documentation](https://www.pulumi.com/docs/reference/programming-model/#providers) for more information.\n"
+    "config": {
+        "variables": {
+            "apiKey": {
+                "type": "string",
+                "secret": true
+            }
+        }
     },
-    "resources": {
-        "openai:index/resource:Resource": {
+    "types": {
+        "openai:index/AssistantTool:AssistantTool": {
             "properties": {
-                "sampleAttribute": {
+                "function": {
+                    "$ref": "#/types/openai:index/AssistantToolFunction:AssistantToolFunction",
+                    "description": "Function definition for tools of type function.\n"
+                },
+                "type": {
                     "type": "string",
-                    "description": "Sample attribute.\n"
+                    "description": "Tools can be of types code_interpreter, retrieval, or function.\n"
                 }
             },
-            "inputProperties": {
-                "sampleAttribute": {
+            "type": "object",
+            "required": [
+                "type"
+            ]
+        },
+        "openai:index/AssistantToolFunction:AssistantToolFunction": {
+            "properties": {
+                "description": {
                     "type": "string",
-                    "description": "Sample attribute.\n"
+                    "description": "A description of what the function does, used by the model to choose when and how to call the function.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of the function to be called. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.\n"
+                },
+                "parameters": {
+                    "type": "string",
+                    "description": "The parameters the functions accepts, described as a JSON Schema object.\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "name",
+                "parameters"
+            ]
+        },
+        "openai:index/AssistantToolResources:AssistantToolResources": {
+            "properties": {
+                "codeInterpreter": {
+                    "$ref": "#/types/openai:index/AssistantToolResourcesCodeInterpreter:AssistantToolResourcesCodeInterpreter",
+                    "description": "Function definition for tools of type function.\n"
+                },
+                "fileSearch": {
+                    "$ref": "#/types/openai:index/AssistantToolResourcesFileSearch:AssistantToolResourcesFileSearch",
+                    "description": "Function definition for tools of type function.\n"
+                }
+            },
+            "type": "object"
+        },
+        "openai:index/AssistantToolResourcesCodeInterpreter:AssistantToolResourcesCodeInterpreter": {
+            "properties": {
+                "fileIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list of file IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.\n"
+                }
+            },
+            "type": "object"
+        },
+        "openai:index/AssistantToolResourcesFileSearch:AssistantToolResourcesFileSearch": {
+            "properties": {
+                "vectorStoreIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list of file IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.\n"
+                },
+                "vectorStores": {
+                    "$ref": "#/types/openai:index/AssistantToolResourcesFileSearchVectorStores:AssistantToolResourcesFileSearchVectorStores",
+                    "description": "Function definition for tools of type function.\n"
+                }
+            },
+            "type": "object"
+        },
+        "openai:index/AssistantToolResourcesFileSearchVectorStores:AssistantToolResourcesFileSearchVectorStores": {
+            "properties": {
+                "fileIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "A list of file IDs attached to this assistant. There can be a maximum of 20 files attached to the assistant. Files are ordered by their creation date in ascending order.\n"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Set of 16 key-value pairs that can be attached to a vector store. This can be useful for storing additional information about the vector store in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.\n"
+                }
+            },
+            "type": "object"
+        },
+        "openai:index/FinetuningJobHyperparams:FinetuningJobHyperparams": {
+            "properties": {
+                "nEpochs": {
+                    "type": "integer",
+                    "description": "N Epochs\n"
+                }
+            },
+            "type": "object",
+            "language": {
+                "nodejs": {
+                    "requiredOutputs": [
+                        "nEpochs"
+                    ]
+                }
+            }
+        },
+        "openai:index/getFilesFile:getFilesFile": {
+            "properties": {
+                "bytes": {
+                    "type": "integer",
+                    "description": "File size in bytes\n"
+                },
+                "created": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "filename": {
+                    "type": "string",
+                    "description": "Filename\n"
+                },
+                "filepath": {
+                    "type": "string",
+                    "description": "Filepath\n"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "File Identifier\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Intended use of file. Use 'fine-tune' for Fine-tuning\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "bytes",
+                "created",
+                "filename",
+                "filepath",
+                "id",
+                "object",
+                "purpose"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getFinetuningJobHyperparams:getFinetuningJobHyperparams": {
+            "properties": {
+                "nEpochs": {
+                    "type": "integer",
+                    "description": "N Epochs\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "nEpochs"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getFinetuningJobsJob:getFinetuningJobsJob": {
+            "properties": {
+                "createdAt": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "fineTunedModel": {
+                    "type": "string",
+                    "description": "Fine-Tuned Model ID\n"
+                },
+                "finishedAt": {
+                    "type": "integer",
+                    "description": "Finished Time\n"
+                },
+                "hyperparams": {
+                    "$ref": "#/types/openai:index/getFinetuningJobsJobHyperparams:getFinetuningJobsJobHyperparams",
+                    "description": "Hyperparams\n"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Fine-Tuning Job Identifier\n"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "Model ID\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "organizationId": {
+                    "type": "string",
+                    "description": "Organization ID\n"
+                },
+                "resultFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Result Files\n"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Status\n"
+                },
+                "trainedTokens": {
+                    "type": "integer",
+                    "description": "Trained Tokens\n"
+                },
+                "trainingFile": {
+                    "type": "string",
+                    "description": "Training File\n"
+                },
+                "validationFile": {
+                    "type": "string",
+                    "description": "Validation File\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "createdAt",
+                "fineTunedModel",
+                "finishedAt",
+                "hyperparams",
+                "id",
+                "model",
+                "object",
+                "organizationId",
+                "resultFiles",
+                "status",
+                "trainedTokens",
+                "trainingFile",
+                "validationFile"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getFinetuningJobsJobHyperparams:getFinetuningJobsJobHyperparams": {
+            "properties": {
+                "nEpochs": {
+                    "type": "integer",
+                    "description": "N Epochs\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "nEpochs"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getModelPermission:getModelPermission": {
+            "properties": {
+                "allowCreateEngine": {
+                    "type": "boolean",
+                    "description": "Allow Create Engine\n"
+                },
+                "allowFineTuning": {
+                    "type": "boolean",
+                    "description": "Allow Fine Tuning\n"
+                },
+                "allowLogprobs": {
+                    "type": "boolean",
+                    "description": "Allow Logprobs\n"
+                },
+                "allowSampling": {
+                    "type": "boolean",
+                    "description": "Allow Sampling\n"
+                },
+                "allowSearchIndices": {
+                    "type": "boolean",
+                    "description": "Allow Search Indices\n"
+                },
+                "allowView": {
+                    "type": "boolean",
+                    "description": "Allow View\n"
+                },
+                "created": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Permission Identifier\n"
+                },
+                "isBlocking": {
+                    "type": "boolean",
+                    "description": "Is Blocking\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "Organization\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "allowCreateEngine",
+                "allowFineTuning",
+                "allowLogprobs",
+                "allowSampling",
+                "allowSearchIndices",
+                "allowView",
+                "created",
+                "id",
+                "isBlocking",
+                "object",
+                "organization"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getModelsModel:getModelsModel": {
+            "properties": {
+                "created": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Model Identifier\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "ownedBy": {
+                    "type": "string",
+                    "description": "Model Owner\n"
+                },
+                "parent": {
+                    "type": "string",
+                    "description": "Parent\n"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/openai:index/getModelsModelPermission:getModelsModelPermission"
+                    },
+                    "description": "Permissions\n"
+                },
+                "root": {
+                    "type": "string",
+                    "description": "Root\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "created",
+                "id",
+                "object",
+                "ownedBy",
+                "parent",
+                "permissions",
+                "root"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        },
+        "openai:index/getModelsModelPermission:getModelsModelPermission": {
+            "properties": {
+                "allowCreateEngine": {
+                    "type": "boolean",
+                    "description": "Allow Create Engine\n"
+                },
+                "allowFineTuning": {
+                    "type": "boolean",
+                    "description": "Allow Fine Tuning\n"
+                },
+                "allowLogprobs": {
+                    "type": "boolean",
+                    "description": "Allow Logprobs\n"
+                },
+                "allowSampling": {
+                    "type": "boolean",
+                    "description": "Allow Sampling\n"
+                },
+                "allowSearchIndices": {
+                    "type": "boolean",
+                    "description": "Allow Search Indices\n"
+                },
+                "allowView": {
+                    "type": "boolean",
+                    "description": "Allow View\n"
+                },
+                "created": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Permission Identifier\n"
+                },
+                "isBlocking": {
+                    "type": "boolean",
+                    "description": "Is Blocking\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "organization": {
+                    "type": "string",
+                    "description": "Organization\n"
+                }
+            },
+            "type": "object",
+            "required": [
+                "allowCreateEngine",
+                "allowFineTuning",
+                "allowLogprobs",
+                "allowSampling",
+                "allowSearchIndices",
+                "allowView",
+                "created",
+                "id",
+                "isBlocking",
+                "object",
+                "organization"
+            ],
+            "language": {
+                "nodejs": {
+                    "requiredInputs": []
+                }
+            }
+        }
+    },
+    "provider": {
+        "description": "The provider type for the openai package. By default, resources use package-wide configuration\nsettings, however an explicit `Provider` instance may be created and passed during resource\nconstruction to achieve fine-grained programmatic control over provider settings. See the\n[documentation](https://www.pulumi.com/docs/reference/programming-model/#providers) for more information.\n",
+        "properties": {
+            "apiKey": {
+                "type": "string",
+                "secret": true
+            }
+        },
+        "inputProperties": {
+            "apiKey": {
+                "type": "string",
+                "secret": true
+            }
+        }
+    },
+    "resources": {
+        "openai:index/assistant:Assistant": {
+            "description": "Assistant resource\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst test = new openai.Assistant(\"test\", {\n    description: \"tf-test-sample\",\n    instructions: \"You are a personal math tutor. When asked a question, write and run Python code to answer the question.\",\n    model: \"gpt-4\",\n    tools: [{\n        type: \"code_interpreter\",\n    }],\n});\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\ntest = openai.Assistant(\"test\",\n    description=\"tf-test-sample\",\n    instructions=\"You are a personal math tutor. When asked a question, write and run Python code to answer the question.\",\n    model=\"gpt-4\",\n    tools=[openai.AssistantToolArgs(\n        type=\"code_interpreter\",\n    )])\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var test = new Openai.Assistant(\"test\", new()\n    {\n        Description = \"tf-test-sample\",\n        Instructions = \"You are a personal math tutor. When asked a question, write and run Python code to answer the question.\",\n        Model = \"gpt-4\",\n        Tools = new[]\n        {\n            new Openai.Inputs.AssistantToolArgs\n            {\n                Type = \"code_interpreter\",\n            },\n        },\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := openai.NewAssistant(ctx, \"test\", \u0026openai.AssistantArgs{\n\t\t\tDescription:  pulumi.String(\"tf-test-sample\"),\n\t\t\tInstructions: pulumi.String(\"You are a personal math tutor. When asked a question, write and run Python code to answer the question.\"),\n\t\t\tModel:        pulumi.String(\"gpt-4\"),\n\t\t\tTools: openai.AssistantToolArray{\n\t\t\t\t\u0026openai.AssistantToolArgs{\n\t\t\t\t\tType: pulumi.String(\"code_interpreter\"),\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.Assistant;\nimport com.pulumi.openai.AssistantArgs;\nimport com.pulumi.openai.inputs.AssistantToolArgs;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var test = new Assistant(\"test\", AssistantArgs.builder()        \n            .description(\"tf-test-sample\")\n            .instructions(\"You are a personal math tutor. When asked a question, write and run Python code to answer the question.\")\n            .model(\"gpt-4\")\n            .tools(AssistantToolArgs.builder()\n                .type(\"code_interpreter\")\n                .build())\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  test:\n    type: openai:Assistant\n    properties:\n      description: tf-test-sample\n      instructions: You are a personal math tutor. When asked a question, write and run Python code to answer the question.\n      model: gpt-4\n      tools:\n        - type: code_interpreter\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "properties": {
+                "createdAt": {
+                    "type": "integer",
+                    "description": "The Unix timestamp (in seconds) for when the assistant was created.\n"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "The description of the assistant. The maximum length is 512 characters.\n"
+                },
+                "instructions": {
+                    "type": "string",
+                    "description": "The system instructions that the assistant uses. The maximum length is 32768 characters.\n"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.\n"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "ID of the model to use. You can use the List models API to see all of your available models.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of the assistant. The maximum length is 256 characters.\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "The object type, which is always assistant.\n"
+                },
+                "temperature": {
+                    "type": "number",
+                    "description": "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\n"
+                },
+                "toolResources": {
+                    "$ref": "#/types/openai:index/AssistantToolResources:AssistantToolResources",
+                    "description": "A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the code*interpreter tool requires a list of file IDs, while the file*search tool requires a list of vector store IDs.\n"
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/openai:index/AssistantTool:AssistantTool"
+                    },
+                    "description": "A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types code_interpreter, retrieval, or function.\n"
+                },
+                "topP": {
+                    "type": "number",
+                    "description": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.\n"
+                }
+            },
+            "required": [
+                "createdAt",
+                "model",
+                "name",
+                "object"
+            ],
+            "inputProperties": {
+                "description": {
+                    "type": "string",
+                    "description": "The description of the assistant. The maximum length is 512 characters.\n"
+                },
+                "instructions": {
+                    "type": "string",
+                    "description": "The system instructions that the assistant uses. The maximum length is 32768 characters.\n"
+                },
+                "metadata": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.\n"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "ID of the model to use. You can use the List models API to see all of your available models.\n"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "The name of the assistant. The maximum length is 256 characters.\n"
+                },
+                "temperature": {
+                    "type": "number",
+                    "description": "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\n"
+                },
+                "toolResources": {
+                    "$ref": "#/types/openai:index/AssistantToolResources:AssistantToolResources",
+                    "description": "A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the code*interpreter tool requires a list of file IDs, while the file*search tool requires a list of vector store IDs.\n"
+                },
+                "tools": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/types/openai:index/AssistantTool:AssistantTool"
+                    },
+                    "description": "A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types code_interpreter, retrieval, or function.\n"
+                },
+                "topP": {
+                    "type": "number",
+                    "description": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.\n"
+                }
+            },
+            "requiredInputs": [
+                "model"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering Assistant resources.\n",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "description": "The Unix timestamp (in seconds) for when the assistant was created.\n"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "The description of the assistant. The maximum length is 512 characters.\n"
+                    },
+                    "instructions": {
+                        "type": "string",
+                        "description": "The system instructions that the assistant uses. The maximum length is 32768 characters.\n"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "string"
+                        },
+                        "description": "Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.\n"
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "ID of the model to use. You can use the List models API to see all of your available models.\n"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the assistant. The maximum length is 256 characters.\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "The object type, which is always assistant.\n"
+                    },
+                    "temperature": {
+                        "type": "number",
+                        "description": "What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.\n"
+                    },
+                    "toolResources": {
+                        "$ref": "#/types/openai:index/AssistantToolResources:AssistantToolResources",
+                        "description": "A set of resources that are used by the assistant's tools. The resources are specific to the type of tool. For example, the code*interpreter tool requires a list of file IDs, while the file*search tool requires a list of vector store IDs.\n"
+                    },
+                    "tools": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/types/openai:index/AssistantTool:AssistantTool"
+                        },
+                        "description": "A list of tool enabled on the assistant. There can be a maximum of 128 tools per assistant. Tools can be of types code_interpreter, retrieval, or function.\n"
+                    },
+                    "topP": {
+                        "type": "number",
+                        "description": "An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "openai:index/file:File": {
+            "description": "File resource\n",
+            "properties": {
+                "bytes": {
+                    "type": "integer",
+                    "description": "File size in bytes\n"
+                },
+                "created": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "filename": {
+                    "type": "string",
+                    "description": "Filename\n"
+                },
+                "filepath": {
+                    "type": "string",
+                    "description": "Filename\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "purpose": {
+                    "type": "string",
+                    "description": "Intended use of file. Use 'fine-tune' for Fine-tuning\n"
+                }
+            },
+            "required": [
+                "bytes",
+                "created",
+                "filename",
+                "filepath",
+                "object",
+                "purpose"
+            ],
+            "inputProperties": {
+                "filepath": {
+                    "type": "string",
+                    "description": "Filename\n"
+                }
+            },
+            "requiredInputs": [
+                "filepath"
+            ],
+            "stateInputs": {
+                "description": "Input properties used for looking up and filtering File resources.\n",
+                "properties": {
+                    "bytes": {
+                        "type": "integer",
+                        "description": "File size in bytes\n"
+                    },
+                    "created": {
+                        "type": "integer",
+                        "description": "Created Time\n"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "Filename\n"
+                    },
+                    "filepath": {
+                        "type": "string",
+                        "description": "Filename\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "Object Type\n"
+                    },
+                    "purpose": {
+                        "type": "string",
+                        "description": "Intended use of file. Use 'fine-tune' for Fine-tuning\n"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "openai:index/finetuningJob:FinetuningJob": {
+            "description": "Fine Tuning Job resource\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.File;\nimport com.pulumi.openai.FileArgs;\nimport com.pulumi.openai.FinetuningJob;\nimport com.pulumi.openai.FinetuningJobArgs;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        var trainingFile = new File(\"trainingFile\", FileArgs.builder()        \n            .filename(\"sport2_prepared_train.jsonl\")\n            .build());\n\n        var validationFile = new File(\"validationFile\", FileArgs.builder()        \n            .filename(\"sport2_prepared_valid.jsonl\")\n            .build());\n\n        var example = new FinetuningJob(\"example\", FinetuningJobArgs.builder()        \n            .trainingFile(trainingFile.id())\n            .validationFile(validationFile.id())\n            .model(\"babbage-002\")\n            .wait(true)\n            .build());\n\n    }\n}\n```\n```yaml\nresources:\n  trainingFile:\n    type: openai:File\n    properties:\n      filename: sport2_prepared_train.jsonl\n  validationFile:\n    type: openai:File\n    properties:\n      filename: sport2_prepared_valid.jsonl\n  example:\n    type: openai:FinetuningJob\n    properties:\n      trainingFile: ${trainingFile.id}\n      validationFile: ${validationFile.id}\n      model: babbage-002\n      wait: true\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "properties": {
+                "createdAt": {
+                    "type": "integer",
+                    "description": "Created Time\n"
+                },
+                "fineTunedModel": {
+                    "type": "string",
+                    "description": "Fine Tuned Model\n"
+                },
+                "finishedAt": {
+                    "type": "integer",
+                    "description": "Finished Time\n"
+                },
+                "hyperparams": {
+                    "$ref": "#/types/openai:index/FinetuningJobHyperparams:FinetuningJobHyperparams",
+                    "description": "Hyperparams\n"
+                },
+                "model": {
+                    "type": "string",
+                    "description": "Model Identifier\n"
+                },
+                "object": {
+                    "type": "string",
+                    "description": "Object Type\n"
+                },
+                "organizationId": {
+                    "type": "string",
+                    "description": "Organization Id\n"
+                },
+                "resultFiles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Result Files\n"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Status\n"
+                },
+                "suffix": {
+                    "type": "string",
+                    "description": "Suffix\n"
+                },
+                "trainedTokens": {
+                    "type": "integer",
+                    "description": "Trained Tokens\n"
+                },
+                "trainingFile": {
+                    "type": "string",
+                    "description": "Training File Identifier\n"
+                },
+                "validationFile": {
+                    "type": "string",
+                    "description": "Validation File Identifier\n"
+                },
+                "wait": {
+                    "type": "boolean",
+                    "description": "Wait for Fine Tuning Job completion\n"
+                }
+            },
+            "required": [
+                "createdAt",
+                "fineTunedModel",
+                "finishedAt",
+                "hyperparams",
+                "object",
+                "organizationId",
+                "resultFiles",
+                "status",
+                "suffix",
+                "trainedTokens"
+            ],
+            "inputProperties": {
+                "model": {
+                    "type": "string",
+                    "description": "Model Identifier\n"
+                },
+                "trainingFile": {
+                    "type": "string",
+                    "description": "Training File Identifier\n"
+                },
+                "validationFile": {
+                    "type": "string",
+                    "description": "Validation File Identifier\n"
+                },
+                "wait": {
+                    "type": "boolean",
+                    "description": "Wait for Fine Tuning Job completion\n"
                 }
             },
             "stateInputs": {
-                "description": "Input properties used for looking up and filtering Resource resources.\n",
+                "description": "Input properties used for looking up and filtering FinetuningJob resources.\n",
                 "properties": {
-                    "sampleAttribute": {
+                    "createdAt": {
+                        "type": "integer",
+                        "description": "Created Time\n"
+                    },
+                    "fineTunedModel": {
                         "type": "string",
-                        "description": "Sample attribute.\n"
+                        "description": "Fine Tuned Model\n"
+                    },
+                    "finishedAt": {
+                        "type": "integer",
+                        "description": "Finished Time\n"
+                    },
+                    "hyperparams": {
+                        "$ref": "#/types/openai:index/FinetuningJobHyperparams:FinetuningJobHyperparams",
+                        "description": "Hyperparams\n"
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "Model Identifier\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "Object Type\n"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization Id\n"
+                    },
+                    "resultFiles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Result Files\n"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Status\n"
+                    },
+                    "suffix": {
+                        "type": "string",
+                        "description": "Suffix\n"
+                    },
+                    "trainedTokens": {
+                        "type": "integer",
+                        "description": "Trained Tokens\n"
+                    },
+                    "trainingFile": {
+                        "type": "string",
+                        "description": "Training File Identifier\n"
+                    },
+                    "validationFile": {
+                        "type": "string",
+                        "description": "Validation File Identifier\n"
+                    },
+                    "wait": {
+                        "type": "boolean",
+                        "description": "Wait for Fine Tuning Job completion\n"
                     }
                 },
                 "type": "object"
@@ -79,34 +933,288 @@
         }
     },
     "functions": {
-        "openai:index/getDataSource:getDataSource": {
+        "openai:index/getFile:getFile": {
+            "description": "File data source\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst test = openai.getFile({\n    id: \"1\",\n});\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\ntest = openai.get_file(id=\"1\")\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var test = Openai.GetFile.Invoke(new()\n    {\n        Id = \"1\",\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := openai.LookupFile(ctx, \u0026openai.LookupFileArgs{\n\t\t\tId: \"1\",\n\t\t}, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.OpenaiFunctions;\nimport com.pulumi.openai.inputs.GetFileArgs;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var test = OpenaiFunctions.getFile(GetFileArgs.builder()\n            .id(\"1\")\n            .build());\n\n    }\n}\n```\n```yaml\nvariables:\n  test:\n    fn::invoke:\n      Function: openai:getFile\n      Arguments:\n        id: '1'\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
             "inputs": {
-                "description": "A collection of arguments for invoking getDataSource.\n",
-                "properties": {
-                    "sampleAttribute": {
-                        "type": "string"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "sampleAttribute"
-                ]
-            },
-            "outputs": {
-                "description": "A collection of values returned by getDataSource.\n",
+                "description": "A collection of arguments for invoking getFile.\n",
                 "properties": {
                     "id": {
                         "type": "string",
-                        "description": "The provider-assigned unique ID for this managed resource.\n"
-                    },
-                    "sampleAttribute": {
-                        "type": "string"
+                        "description": "File Identifier\n"
                     }
                 },
                 "type": "object",
                 "required": [
-                    "sampleAttribute",
                     "id"
+                ]
+            },
+            "outputs": {
+                "description": "A collection of values returned by getFile.\n",
+                "properties": {
+                    "bytes": {
+                        "type": "integer",
+                        "description": "File size in bytes\n"
+                    },
+                    "created": {
+                        "type": "integer",
+                        "description": "Created Time\n"
+                    },
+                    "filename": {
+                        "type": "string",
+                        "description": "Filename\n"
+                    },
+                    "filepath": {
+                        "type": "string",
+                        "description": "Filepath\n"
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "File Identifier\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "Object Type\n"
+                    },
+                    "purpose": {
+                        "type": "string",
+                        "description": "Intended use of file. Use 'fine-tune' for Fine-tuning\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "bytes",
+                    "created",
+                    "filename",
+                    "filepath",
+                    "id",
+                    "object",
+                    "purpose"
+                ]
+            }
+        },
+        "openai:index/getFiles:getFiles": {
+            "description": "Files data source\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst test = openai.getFiles({});\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\ntest = openai.get_files()\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var test = Openai.GetFiles.Invoke();\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := openai.GetFiles(ctx, nil, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.OpenaiFunctions;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var test = OpenaiFunctions.getFiles();\n\n    }\n}\n```\n```yaml\nvariables:\n  test:\n    fn::invoke:\n      Function: openai:getFiles\n      Arguments: {}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "outputs": {
+                "description": "A collection of values returned by getFiles.\n",
+                "properties": {
+                    "files": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/types/openai:index/getFilesFile:getFilesFile"
+                        },
+                        "description": "Files\n"
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Files identifier\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "files",
+                    "id"
+                ]
+            }
+        },
+        "openai:index/getFinetuningJob:getFinetuningJob": {
+            "description": "Fine-Tuning Job data source\n",
+            "inputs": {
+                "description": "A collection of arguments for invoking getFinetuningJob.\n",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Fine Tuning Job Identifier\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ]
+            },
+            "outputs": {
+                "description": "A collection of values returned by getFinetuningJob.\n",
+                "properties": {
+                    "createdAt": {
+                        "type": "integer",
+                        "description": "Created Time\n"
+                    },
+                    "fineTunedModel": {
+                        "type": "string",
+                        "description": "Fine-Tuned Model ID\n"
+                    },
+                    "finishedAt": {
+                        "type": "integer",
+                        "description": "Finished Time\n"
+                    },
+                    "hyperparams": {
+                        "$ref": "#/types/openai:index/getFinetuningJobHyperparams:getFinetuningJobHyperparams",
+                        "description": "Hyperparams\n"
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Fine Tuning Job Identifier\n"
+                    },
+                    "model": {
+                        "type": "string",
+                        "description": "Model ID\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "Object Type\n"
+                    },
+                    "organizationId": {
+                        "type": "string",
+                        "description": "Organization ID\n"
+                    },
+                    "resultFiles": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "description": "Result Files\n"
+                    },
+                    "status": {
+                        "type": "string",
+                        "description": "Status\n"
+                    },
+                    "trainedTokens": {
+                        "type": "integer",
+                        "description": "Trained Tokens\n"
+                    },
+                    "trainingFile": {
+                        "type": "string",
+                        "description": "Training File\n"
+                    },
+                    "validationFile": {
+                        "type": "string",
+                        "description": "Validation File\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "createdAt",
+                    "fineTunedModel",
+                    "finishedAt",
+                    "hyperparams",
+                    "id",
+                    "model",
+                    "object",
+                    "organizationId",
+                    "resultFiles",
+                    "status",
+                    "trainedTokens",
+                    "trainingFile",
+                    "validationFile"
+                ]
+            }
+        },
+        "openai:index/getFinetuningJobs:getFinetuningJobs": {
+            "description": "Fine-Tuning Jobs data source\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst test = openai.getFinetuningJobs({});\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\ntest = openai.get_finetuning_jobs()\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var test = Openai.GetFinetuningJobs.Invoke();\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := openai.GetFinetuningJobs(ctx, nil, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.OpenaiFunctions;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var test = OpenaiFunctions.getFinetuningJobs();\n\n    }\n}\n```\n```yaml\nvariables:\n  test:\n    fn::invoke:\n      Function: openai:getFinetuningJobs\n      Arguments: {}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "outputs": {
+                "description": "A collection of values returned by getFinetuningJobs.\n",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Fine-Tuning Jobs identifier\n"
+                    },
+                    "jobs": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/types/openai:index/getFinetuningJobsJob:getFinetuningJobsJob"
+                        },
+                        "description": "Fine Tuning Jobs\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "jobs"
+                ]
+            }
+        },
+        "openai:index/getModel:getModel": {
+            "description": "Model data source\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst test = openai.getModel({\n    id: \"whisper-1\",\n});\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\ntest = openai.get_model(id=\"whisper-1\")\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var test = Openai.GetModel.Invoke(new()\n    {\n        Id = \"whisper-1\",\n    });\n\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\t_, err := openai.GetModel(ctx, \u0026openai.GetModelArgs{\n\t\t\tId: \"whisper-1\",\n\t\t}, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.OpenaiFunctions;\nimport com.pulumi.openai.inputs.GetModelArgs;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var test = OpenaiFunctions.getModel(GetModelArgs.builder()\n            .id(\"whisper-1\")\n            .build());\n\n    }\n}\n```\n```yaml\nvariables:\n  test:\n    fn::invoke:\n      Function: openai:getModel\n      Arguments:\n        id: whisper-1\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "inputs": {
+                "description": "A collection of arguments for invoking getModel.\n",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Model Identifier\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id"
+                ]
+            },
+            "outputs": {
+                "description": "A collection of values returned by getModel.\n",
+                "properties": {
+                    "created": {
+                        "type": "integer",
+                        "description": "Created Time\n"
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Model Identifier\n"
+                    },
+                    "object": {
+                        "type": "string",
+                        "description": "Object Type\n"
+                    },
+                    "ownedBy": {
+                        "type": "string",
+                        "description": "Model Owner\n"
+                    },
+                    "parent": {
+                        "type": "string",
+                        "description": "Parent\n"
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/types/openai:index/getModelPermission:getModelPermission"
+                        },
+                        "description": "Permissions\n"
+                    },
+                    "root": {
+                        "type": "string",
+                        "description": "Root\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "created",
+                    "id",
+                    "object",
+                    "ownedBy",
+                    "parent",
+                    "permissions",
+                    "root"
+                ]
+            }
+        },
+        "openai:index/getModels:getModels": {
+            "description": "Models data source\n\n## Example Usage\n\n\u003c!--Start PulumiCodeChooser --\u003e\n```typescript\nimport * as pulumi from \"@pulumi/pulumi\";\nimport * as openai from \"@pulumi/openai\";\n\nconst models = openai.getModels({});\nexport const modelCount = models.then(models =\u003e models.models).length;\n```\n```python\nimport pulumi\nimport pulumi_openai as openai\n\nmodels = openai.get_models()\npulumi.export(\"modelCount\", len(models.models))\n```\n```csharp\nusing System.Collections.Generic;\nusing System.Linq;\nusing Pulumi;\nusing Openai = Pulumi.Openai;\n\nreturn await Deployment.RunAsync(() =\u003e \n{\n    var models = Openai.GetModels.Invoke();\n\n    return new Dictionary\u003cstring, object?\u003e\n    {\n        [\"modelCount\"] = models.Apply(getModelsResult =\u003e getModelsResult.Models).Length,\n    };\n});\n```\n```go\npackage main\n\nimport (\n\t\"github.com/pulumi/pulumi/sdk/v3/go/pulumi\"\n\t\"github.com/tonkean/pulumi-openai/sdk/go/openai\"\n)\n\nfunc main() {\n\tpulumi.Run(func(ctx *pulumi.Context) error {\n\t\tmodels, err := openai.GetModels(ctx, nil, nil)\n\t\tif err != nil {\n\t\t\treturn err\n\t\t}\n\t\tctx.Export(\"modelCount\", len(models.Models))\n\t\treturn nil\n\t})\n}\n```\n```java\npackage generated_program;\n\nimport com.pulumi.Context;\nimport com.pulumi.Pulumi;\nimport com.pulumi.core.Output;\nimport com.pulumi.openai.OpenaiFunctions;\nimport java.util.List;\nimport java.util.ArrayList;\nimport java.util.Map;\nimport java.io.File;\nimport java.nio.file.Files;\nimport java.nio.file.Paths;\n\npublic class App {\n    public static void main(String[] args) {\n        Pulumi.run(App::stack);\n    }\n\n    public static void stack(Context ctx) {\n        final var models = OpenaiFunctions.getModels();\n\n        ctx.export(\"modelCount\", models.applyValue(getModelsResult -\u003e getModelsResult.models()).length());\n    }\n}\n```\n\u003c!--End PulumiCodeChooser --\u003e\n",
+            "outputs": {
+                "description": "A collection of values returned by getModels.\n",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Models identifier\n"
+                    },
+                    "models": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/types/openai:index/getModelsModel:getModelsModel"
+                        },
+                        "description": "Models\n"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "id",
+                    "models"
                 ]
             }
         }

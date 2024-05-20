@@ -1,1 +1,110 @@
-{}
+{
+    "auto-aliasing": {
+        "resources": {
+            "openai_assistant": {
+                "current": "openai:index/assistant:Assistant",
+                "fields": {
+                    "tool_resources": {
+                        "fields": {
+                            "code_interpreter": {
+                                "fields": {
+                                    "file_ids": {
+                                        "maxItemsOne": false
+                                    }
+                                }
+                            },
+                            "file_search": {
+                                "fields": {
+                                    "vector_store_ids": {
+                                        "maxItemsOne": false
+                                    },
+                                    "vector_stores": {
+                                        "fields": {
+                                            "file_ids": {
+                                                "maxItemsOne": false
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "tools": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "openai_file": {
+                "current": "openai:index/file:File"
+            },
+            "openai_finetuning_job": {
+                "current": "openai:index/finetuningJob:FinetuningJob",
+                "fields": {
+                    "result_files": {
+                        "maxItemsOne": false
+                    }
+                }
+            }
+        },
+        "datasources": {
+            "openai_file": {
+                "current": "openai:index/getFile:getFile"
+            },
+            "openai_files": {
+                "current": "openai:index/getFiles:getFiles",
+                "fields": {
+                    "files": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "openai_finetuning_job": {
+                "current": "openai:index/getFinetuningJob:getFinetuningJob",
+                "fields": {
+                    "result_files": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "openai_finetuning_jobs": {
+                "current": "openai:index/getFinetuningJobs:getFinetuningJobs",
+                "fields": {
+                    "jobs": {
+                        "maxItemsOne": false,
+                        "elem": {
+                            "fields": {
+                                "result_files": {
+                                    "maxItemsOne": false
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "openai_model": {
+                "current": "openai:index/getModel:getModel",
+                "fields": {
+                    "permissions": {
+                        "maxItemsOne": false
+                    }
+                }
+            },
+            "openai_models": {
+                "current": "openai:index/getModels:getModels",
+                "fields": {
+                    "models": {
+                        "maxItemsOne": false,
+                        "elem": {
+                            "fields": {
+                                "permissions": {
+                                    "maxItemsOne": false
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "auto-settings": {}
+}

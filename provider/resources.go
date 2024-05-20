@@ -20,9 +20,9 @@ import (
 	// Allow embedding bridge-metadata.json in the provider.
 	_ "embed"
 
+	pfbridge "github.com/pulumi/pulumi-terraform-bridge/pf/tfbridge"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge/tokens"
-	shimv2 "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim/sdk-v2"
 	"github.com/skyscrapr/terraform-provider-openai/openai"
 	"github.com/tonkean/pulumi-openai/provider/pkg/version"
 )
@@ -103,7 +103,7 @@ func Provider() tfbridge.ProviderInfo {
 		// - "github.com/hashicorp/terraform-plugin-framework/provider".Provider (for plugin-framework)
 		//
 		//nolint:lll
-		P: shimv2.NewProvider(openai.New(version.Version)()),
+		P: pfbridge.ShimProvider(openai.New(version.Version)()),
 
 		Name:    "openai",
 		Version: version.Version,
@@ -133,7 +133,7 @@ func Provider() tfbridge.ProviderInfo {
 		Repository: "https://github.com/tonkean/pulumi-openai",
 		// The GitHub Org for the provider - defaults to `terraform-providers`. Note that this should
 		// match the TF provider module's require directive, not any replace directives.
-		GitHubOrg:    "",
+		GitHubOrg:    "skyscrapr",
 		MetadataInfo: tfbridge.NewProviderMetadata(metadata),
 		Config:       map[string]*tfbridge.SchemaInfo{
 			// Add any required configuration here, or remove the example below if
