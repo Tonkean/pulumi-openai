@@ -23,10 +23,7 @@ import (
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge/tokens"
 	shimv2 "github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfshim/sdk-v2"
-
-	// Replace this provider with the provider you are bridging.
-	openai "github.com/iwahbe/terraform-provider-openai/provider"
-
+	"github.com/skyscrapr/terraform-provider-openai/openai"
 	"github.com/tonkean/pulumi-openai/provider/pkg/version"
 )
 
