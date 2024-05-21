@@ -89,6 +89,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{matrix.pythonversion}}
+      - name: Install setuptools
+        run: python3 -m pip install --upgrade pip setuptools wheel
       - name: Build SDK
         run: make build_${{ matrix.language }}
       - name: Check worktree clean

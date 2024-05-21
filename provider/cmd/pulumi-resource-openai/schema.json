@@ -10,6 +10,7 @@
     "license": "Apache-2.0",
     "attribution": "This Pulumi package is based on the [`openai` Terraform Provider](https://github.com/skyscrapr/terraform-provider-openai).",
     "repository": "https://github.com/tonkean/pulumi-openai",
+    "pluginDownloadURL": "github://api.github.com/Tonkean/pulumi-openai",
     "publisher": "Tonkean",
     "meta": {
         "moduleFormat": "(.*)(?:/[^/]*)"
@@ -40,6 +41,7 @@
             "disableUnionOutputTypes": true
         },
         "python": {
+            "packageName": "pulumi_openai",
             "requires": {
                 "pulumi": "\u003e=3.0.0,\u003c4.0.0"
             },

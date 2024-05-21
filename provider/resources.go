@@ -122,7 +122,7 @@ func Provider() tfbridge.ProviderInfo {
 		// PluginDownloadURL is an optional URL used to download the Provider
 		// for use in Pulumi programs
 		// e.g https://github.com/org/pulumi-provider-name/releases/
-		PluginDownloadURL: "",
+		PluginDownloadURL: "github://api.github.com/Tonkean/pulumi-openai",
 		Description:       "A Pulumi package for creating and managing openai cloud resources.",
 		// category/cloud tag helps with categorizing the package in the Pulumi Registry.
 		// For all available categories, see `Keywords` in
@@ -157,6 +157,7 @@ func Provider() tfbridge.ProviderInfo {
 		},
 		Python: &tfbridge.PythonInfo{
 			// List any Python dependencies and their version ranges
+			PackageName: "pulumi_openai",
 			Requires: map[string]string{
 				"pulumi": ">=3.0.0,<4.0.0",
 			},
