@@ -23,7 +23,7 @@ import (
 	pfbridge "github.com/pulumi/pulumi-terraform-bridge/pf/tfbridge"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge/tokens"
-	"github.com/skyscrapr/terraform-provider-openai/openai"
+	openai "github.com/skyscrapr/terraform-provider-openai/openai"
 	"github.com/tonkean/pulumi-openai/provider/pkg/version"
 )
 
