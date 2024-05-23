@@ -17,9 +17,9 @@ package main
 import (
 	_ "embed"
 
-	"github.com/Tonkean/pulumi-openai/provider/pkg/version"
 	"github.com/pulumi/pulumi-terraform-bridge/v3/pkg/tfbridge"
 	openai "github.com/tonkean/pulumi-openai/provider"
+	"github.com/tonkean/pulumi-openai/provider/pkg/version"
 )
 
 //go:embed schema.json

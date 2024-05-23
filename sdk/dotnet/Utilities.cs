@@ -53,7 +53,7 @@ namespace Pulumi.Openai
         {
             var dst = src ?? new global::Pulumi.InvokeOptions{};
             dst.Version = src?.Version ?? Version;
-            dst.PluginDownloadURL = src?.PluginDownloadURL ?? "github://api.github.com/Tonkean/pulumi-openai";
+            dst.PluginDownloadURL = src?.PluginDownloadURL ?? "github://api.github.com/tonkean/pulumi-openai";
             return dst;
         }
 

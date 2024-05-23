@@ -39,7 +39,7 @@ namespace Pulumi.Openai
             var defaultOptions = new CustomResourceOptions
             {
                 Version = Utilities.Version,
-                PluginDownloadURL = "github://api.github.com/Tonkean/pulumi-openai",
+                PluginDownloadURL = "github://api.github.com/tonkean/pulumi-openai",
                 AdditionalSecretOutputs =
                 {
                     "apiKey",

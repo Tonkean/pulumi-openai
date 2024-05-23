@@ -53,7 +53,7 @@ export function getVersion(): string {
 
 /** @internal */
 export function resourceOptsDefaults(): any {
-    return { version: getVersion(), pluginDownloadURL: "github://api.github.com/Tonkean/pulumi-openai" };
+    return { version: getVersion(), pluginDownloadURL: "github://api.github.com/tonkean/pulumi-openai" };
 }
 
 /** @internal */

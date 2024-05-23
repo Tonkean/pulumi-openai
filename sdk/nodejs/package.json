@@ -24,6 +24,6 @@
     "pulumi": {
         "resource": true,
         "name": "openai",
-        "server": "github://api.github.com/Tonkean/pulumi-openai"
+        "server": "github://api.github.com/tonkean/pulumi-openai"
     }
 }
